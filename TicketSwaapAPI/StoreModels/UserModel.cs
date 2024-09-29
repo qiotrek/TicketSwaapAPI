@@ -25,6 +25,15 @@ namespace TicketSwaapAPI.StoreModels
         public string? Description { get; set; }
 
         [FirestoreProperty]
+        public List<string> Offers  { get; set; }
+
+        [FirestoreProperty]
+        public List<string> FavActions { get; set; }
+
+        [FirestoreProperty]
+        public List<Notification> Notifications { get; set; }
+
+        [FirestoreProperty]
         [Required]
         [UserModelRoleValidation]
         public string Role { get; set; }
@@ -43,5 +52,24 @@ namespace TicketSwaapAPI.StoreModels
         [JsonIgnore]
         [FirestoreProperty]
         public string? UpdateLogin { get; set; }
+    }
+
+    [FirestoreData]
+    public class Notification
+    {
+        [FirestoreProperty]
+        public string Id { get; set; }
+
+        [FirestoreProperty]
+        public string Title { get; set; }
+
+        [FirestoreProperty]
+        public string Message { get; set; }
+
+        [FirestoreProperty]
+        public DateTime CreateDate { get; set; }
+
+        [FirestoreProperty]
+        public string Url { get; set; }
     }
 }

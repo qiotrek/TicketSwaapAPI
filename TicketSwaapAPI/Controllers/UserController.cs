@@ -87,7 +87,7 @@ namespace TicketSwaapAPI.Controllers
                 }
                 else
                 {
-                    _logger.LogError($"UserExists");
+                    _logger.LogError($"UserNotExists");
                     return StatusCode(403);
                 }
 

@@ -2,8 +2,11 @@
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using TicketSwaapAPI.Services;
 using TicketSwaapAPI.Services.Infrastructure;
+using TicketSwaapAPI.Services.Logic;
 using TicketSwaapAPI.Services.Repositories;
+using TicketSwaapAPI.Services.Security;
 using TicketSwaapAPI.StoreModels;
 
 namespace TicketSwaapAPI
@@ -22,7 +25,18 @@ namespace TicketSwaapAPI
             services.AddResponseCaching();
             services.AddSingleton(new FirestoreTableNamesConfig().WithPrefixAndSuffix(Configuration.GetValue<string>("FirestoreTableNamesConfigPrefix"), Configuration.GetValue<string>("FirestoreTableNamesConfigSuffix")));
             services.AddTransient<FireStoreService>();
+            services.AddSingleton<JwtGenerator>();
             services.AddTransient<IUserRepository,UserRepository>();
+            services.AddTransient<INewActionPropositionlogic, NewActionPropositionlogic>();
+            services.AddTransient<INewActionsPropositionRepository, NewActionsPropositionRepository>();
+            services.AddTransient<IActiveActionsRepository, ActiveActionsRepository>();
+            services.AddTransient<IUserRepository,UserRepository>();
+            services.AddTransient<IAdminLogic, AdminLogic>();
+            services.AddTransient<IAdminRepository, AdminRepository>();
+            services.AddTransient<IActiveActionsLogic, ActiveActionsLogic>();
+            services.AddTransient<IOffertRepository, OffertRepository>();
+            services.AddTransient<IAdminPanelLogic, AdminPanelLogic>();
+            services.AddTransient<IUserNotificationService, UserNotificationService>();
             services.AddControllers();
             services.AddCors(options =>
             {
@@ -71,8 +85,9 @@ namespace TicketSwaapAPI
                     }
                 });
 
-                var XmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,XmlFileName));
+                //var XmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,XmlFileName));
+
             });
         }
 
