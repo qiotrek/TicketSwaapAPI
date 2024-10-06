@@ -101,7 +101,6 @@ namespace TicketSwaapAPI.Services.Logic
                 await _offertRepository.Set(mainOffert);
                 await _userNotificationService.GetNotification(mainOffert.CreateUser, NotificationType.NewOffert, action, offert);
 
-
             }
 
             return action;            

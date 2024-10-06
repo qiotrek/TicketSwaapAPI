@@ -66,7 +66,7 @@ namespace TicketSwaapAPI.StoreModels
         [FirestoreProperty]
         public string Message { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty(ConverterType = typeof(FirestoreDatetimeConverter))]
         public DateTime CreateDate { get; set; }
 
         [FirestoreProperty]

@@ -7,6 +7,8 @@ namespace TicketSwaapAPI.Services.Logic
     public interface IAdminPanelLogic
     {
         Task<List<OffertViewModel>> GetMyOfferts(string userId);
+        Task<List<Notification>> GetMyNotifications(string userId);
+        Task<bool> CloseNotification(string userId,string id);
     }
 
     public class AdminPanelLogic : IAdminPanelLogic
@@ -43,6 +45,29 @@ namespace TicketSwaapAPI.Services.Logic
                 }
 
             }
+            return result;
+        }
+        public async Task<List<Notification>> GetMyNotifications(string userId)
+        {
+            UserModel user = await _userRepository.Get(userId);
+
+            return user?.Notifications??new List<Notification>();
+        }
+        public async Task<bool> CloseNotification(string userId, string id) 
+        {
+            bool result = false;
+            UserModel user = await _userRepository.Get(userId);
+            Notification notification = user.Notifications.Where(v => v.Id == id).First();
+            if (notification.Id == id)
+            {
+                user.Notifications.Remove(notification);
+                UserModel userAfterUpdate= await _userRepository.Update(user);
+                if (userAfterUpdate != null)
+                {
+                    result = true;
+                }
+            }
+        
             return result;
         }
     }

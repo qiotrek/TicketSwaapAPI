@@ -18,7 +18,7 @@ namespace TicketSwaapAPI.Services
     }
     public interface IUserNotificationService 
     {
-        public Task<Notification> GetNotification(string userId, NotificationType type, ActiveActionModel action, OffertModel? offert);
+        public Task<Notification> GetNotification(string userId, NotificationType type, ActiveActionModel action, OffertModel offert=null);
 
     }
     public class UserNotificationService: IUserNotificationService
@@ -38,7 +38,7 @@ namespace TicketSwaapAPI.Services
             _fsTabs = firestoreTableNamesConfig;
             _userRepo = userRepo;
         }
-        public async Task<Notification> GetNotification(string userId,NotificationType type, ActiveActionModel action,OffertModel? offert)
+        public async Task<Notification> GetNotification(string userId,NotificationType type, ActiveActionModel action,OffertModel offert=null)
         {
             Notification notification= new Notification();
             if (type == NotificationType.ActionStart)
@@ -97,8 +97,10 @@ namespace TicketSwaapAPI.Services
         public async Task<bool> AddNotificationForUser(string userId,Notification notification)
         {
             UserModel user = await _userRepo.Get(userId);
-            if (user == null)
+            if (user != null)
             {
+                if (user.Notifications == null)
+                    user.Notifications = new List<Notification>();
                 user.Notifications.Add(notification);
                 user.UpdateDate = DateTime.Now;
                 user.UpdateLogin = "NOTI";

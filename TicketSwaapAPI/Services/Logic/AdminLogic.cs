@@ -44,7 +44,10 @@ namespace TicketSwaapAPI.Services.Logic
                 if (setResult)
                 {
                     await _newActionRepository.Delete(id);
-                    await _userNotificationService.GetNotification(userId, NotificationType.NewOffert, activeAction,new OffertModel());
+                }
+                foreach (var Id in actionProposition.IntrestedEmails)
+                {
+                    await _userNotificationService.GetNotification(userId, NotificationType.ActionStart, activeAction);
                 }
                 
                 return true;
