@@ -9,7 +9,7 @@ namespace TicketSwaapAPI.Services.Logic
         Task<List<OffertViewModel>> GetMyOfferts(string userId);
         Task<List<Notification>> GetMyNotifications(string userId);
         Task<bool> CloseNotification(string userId,string id);
-        Task<bool> AddQuestion(string userId, ProblemsAndQuestionsModel model);
+        Task<bool> AddQuestion(string userId, string title, string message);
         Task<bool> CloseQuestion(string userId, string id);
     }
 
@@ -75,13 +75,16 @@ namespace TicketSwaapAPI.Services.Logic
             return result;
         }
 
-        public async Task<bool> AddQuestion(string userId, ProblemsAndQuestionsModel model)
+        public async Task<bool> AddQuestion(string userId, string title, string message)
         {
             bool result = false;
+            ProblemsAndQuestionsModel model = new ProblemsAndQuestionsModel();
             UserModel user = await _userRepository.Get(userId);
             if (user!=null)
             {
                 model.Id = Guid.NewGuid().ToString();
+                model.Title = title;
+                model.Message = message;
                 model.userId = userId;
                 model.CreateDate = DateTime.Now;
                 model.Status = 0;

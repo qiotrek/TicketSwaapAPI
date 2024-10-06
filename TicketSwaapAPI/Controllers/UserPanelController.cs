@@ -84,12 +84,12 @@ namespace TicketSwaapAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces("application/json")]
-        public async Task<ActionResult<bool>> AddQuestion([FromBody] ProblemsAndQuestionsModel model)
+        public async Task<ActionResult<bool>> AddQuestion([FromQuery] string title, string message)
         {
             try
             {
                 _logger.LogInformation("Trying to add question");
-                bool result = await _userPanelLogic.AddQuestion(this.User.GetUserId(), model);
+                bool result = await _userPanelLogic.AddQuestion(this.User.GetUserId(), title, message);
                 return Ok(result);
             }
             catch (ArgumentException ex)
