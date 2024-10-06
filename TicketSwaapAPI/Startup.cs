@@ -35,8 +35,9 @@ namespace TicketSwaapAPI
             services.AddTransient<IAdminRepository, AdminRepository>();
             services.AddTransient<IActiveActionsLogic, ActiveActionsLogic>();
             services.AddTransient<IOffertRepository, OffertRepository>();
-            services.AddTransient<IAdminPanelLogic, AdminPanelLogic>();
+            services.AddTransient<IUserPanelLogic, UserPanelLogic>();
             services.AddTransient<IUserNotificationService, UserNotificationService>();
+            services.AddTransient<IProblemsAndQuestionsRepository, ProblemsAndQuestionsRepository>();
             services.AddControllers();
             services.AddCors(options =>
             {

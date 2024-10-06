@@ -4,25 +4,29 @@ using TicketSwaapAPI.StoreModels;
 
 namespace TicketSwaapAPI.Services.Logic
 {
-    public interface IAdminPanelLogic
+    public interface IUserPanelLogic
     {
         Task<List<OffertViewModel>> GetMyOfferts(string userId);
         Task<List<Notification>> GetMyNotifications(string userId);
         Task<bool> CloseNotification(string userId,string id);
+        Task<bool> AddQuestion(string userId, ProblemsAndQuestionsModel model);
+        Task<bool> CloseQuestion(string userId, string id);
     }
 
-    public class AdminPanelLogic : IAdminPanelLogic
+    public class UserPanelLogic : IUserPanelLogic
     {
         private readonly IActiveActionsRepository _activeActionsRepository;
         private readonly IOffertRepository _offertRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IProblemsAndQuestionsRepository _problemsAndQuestionsRepository;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<AdminPanelLogic> _logger;
-        public AdminPanelLogic(IActiveActionsRepository activeActionsRepository, IOffertRepository offertRepository, IUserRepository userRepository, IConfiguration configuration, ILogger<AdminPanelLogic> logger)
+        private readonly ILogger<UserPanelLogic> _logger;
+        public UserPanelLogic(IActiveActionsRepository activeActionsRepository, IOffertRepository offertRepository, IUserRepository userRepository, IProblemsAndQuestionsRepository problemsAndQuestionsRepository, IConfiguration configuration, ILogger<UserPanelLogic> logger)
         {
             _activeActionsRepository = activeActionsRepository;
             _offertRepository = offertRepository;
             _userRepository = userRepository;
+            _problemsAndQuestionsRepository=problemsAndQuestionsRepository;
             _configuration = configuration;
             _logger = logger;
         }
@@ -68,6 +72,42 @@ namespace TicketSwaapAPI.Services.Logic
                 }
             }
         
+            return result;
+        }
+
+        public async Task<bool> AddQuestion(string userId, ProblemsAndQuestionsModel model)
+        {
+            bool result = false;
+            UserModel user = await _userRepository.Get(userId);
+            if (user!=null)
+            {
+                model.userId = userId;
+                model.CreateDate = DateTime.Now;
+                model.Status = 0;
+                ProblemsAndQuestionsModel QaP= await _problemsAndQuestionsRepository.Set(model);
+                if (QaP!=null)
+                {
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<bool> CloseQuestion(string userId, string id)
+        {
+            bool result = false;
+            UserModel user = await _userRepository.Get(userId);
+            if (user != null)
+            {
+                
+                ProblemsAndQuestionsModel QaP = await _problemsAndQuestionsRepository.Get(id);
+                if (QaP != null)
+                {
+                    result= await _problemsAndQuestionsRepository.Delete(QaP);
+                }
+            }
+
             return result;
         }
     }

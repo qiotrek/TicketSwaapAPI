@@ -10,6 +10,7 @@
             internal static readonly string NewActionsPropositionsTableName = "NewActionsPropositions";
             internal static readonly string ActiveActionsTableName = "ActiveActions";
             internal static readonly string OffertsTableName = "Offerts";
+            internal static readonly string ProblemsAndQuestionsTableName = "ProblemsAndQuestions";
         }
         public string AnnouncementsTableName { get; set; }= Defaults.AnnouncementsTableName;
         public string UsersTableName { get; set; }= Defaults.UsersTableName;
@@ -17,6 +18,7 @@
         public string NewActionsPropositionsTableName { get; set; }= Defaults.NewActionsPropositionsTableName;
         public string ActiveActionsTableName { get; set; }= Defaults.ActiveActionsTableName;
         public string OffertsTableName { get; set; }= Defaults.OffertsTableName;
+        public string ProblemsAndQuestionsTableName { get; set; }= Defaults.ProblemsAndQuestionsTableName;
 
         public FirestoreTableNamesConfig WithPrefixAndSuffix(string pref,string suf)  {
 
@@ -26,6 +28,7 @@
             NewActionsPropositionsTableName = pref+ NewActionsPropositionsTableName + suf;
             ActiveActionsTableName = pref+ ActiveActionsTableName + suf;
             OffertsTableName = pref+ OffertsTableName + suf;
+            ProblemsAndQuestionsTableName = pref+ ProblemsAndQuestionsTableName + suf;
 
             return this;
         }
