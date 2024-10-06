@@ -81,6 +81,7 @@ namespace TicketSwaapAPI.Services.Logic
             UserModel user = await _userRepository.Get(userId);
             if (user!=null)
             {
+                model.Id = Guid.NewGuid().ToString();
                 model.userId = userId;
                 model.CreateDate = DateTime.Now;
                 model.Status = 0;
