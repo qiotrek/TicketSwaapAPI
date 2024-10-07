@@ -80,6 +80,49 @@ namespace TicketSwaapAPI.Controllers
                 return BadRequest(ex.Message);
             }           
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("ProblemsAndQuestions")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProblemsAndQuestionsModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<ProblemsAndQuestionsModel>>> GetProblemsAndQuestions()
+        {
+            try
+            {
+                List<ProblemsAndQuestionsModel> result = await _adminLogic.GetProblemsAndQuestions();
+
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning("ArgumentException: {Message}", ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("ProblemsAndQuestions")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        public async Task<ActionResult<bool>> OpenProblemsAndQuestions(string id)
+        {
+            try
+            {
+                bool result = await _adminLogic.OpenProblemsAndQuestions(this.User.GetUserId(),id);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning("ArgumentException: {Message}", ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
     }
 
     

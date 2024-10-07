@@ -27,5 +27,11 @@ namespace TicketSwaapAPI.StoreModels
 
         [FirestoreProperty(ConverterType = typeof(FirestoreDatetimeConverter))]
         public DateTime CreateDate { get; set; }
+
+        [FirestoreProperty(ConverterType = typeof(FirestoreDatetimeConverter))]
+        public DateTime UpdateDate { get; set; }
+
+        [FirestoreProperty]
+        public string UpdateLogin { get; set; }
     }
 }
