@@ -43,9 +43,10 @@ namespace TicketSwaapAPI.Services.Logic
             foreach (var offertId in user.Offers)
             {
                 OffertModel offert = await _offertRepository.Get(offertId);
+                ActiveActionModel action= await _activeActionsRepository.Get(offert.EventId);
                 if (offert != null)
                 {
-                    result.Add(OffertViewModel.ConvertToViewModel(offert));
+                    result.Add(OffertViewModel.ConvertToViewModel(offert, action));
                 }
 
             }

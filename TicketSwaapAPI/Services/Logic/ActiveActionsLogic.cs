@@ -1,4 +1,6 @@
-﻿using TicketSwaapAPI.Models.ViewModels;
+﻿using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
+using TicketSwaapAPI.Models.ViewModels;
 using TicketSwaapAPI.Services.Repositories;
 using TicketSwaapAPI.StoreModels;
 
@@ -9,7 +11,9 @@ namespace TicketSwaapAPI.Services.Logic
         Task<ActiveActionModel> AddNewOffert(string id, string place, string sector, string userId,string? mainOffertId);
         Task<ActiveActionModel> DeleteOffert(string actionId, string offertId, string userId);
         Task<ActiveActionViewModel> GetActiveAction(string id);
-        Task<List<ActiveActionModel>> GetActiveActions();
+        Task<List<ActiveActionModel>> GetActiveActions(string[]actionIds=null);
+        Task<List<string>> GetUserFavoritesActions(string userId);
+        Task<bool> UpdateUserFavoriteAction(string userId, string actionId);
     }
 
     public class ActiveActionsLogic : IActiveActionsLogic
@@ -34,7 +38,7 @@ namespace TicketSwaapAPI.Services.Logic
         public async Task<ActiveActionViewModel> GetActiveAction(string id)
         {
             ActiveActionModel action = await _activeActionsRepository.Get(id);
-            if (action!=null && action.Id == id)
+            if (action != null && action.Id == id)
             {
                 List<OffertModel> offerts = new List<OffertModel>();
                 foreach (var offertId in action.Offerts)
@@ -53,11 +57,48 @@ namespace TicketSwaapAPI.Services.Logic
             }
         }
 
-        public async Task<List<ActiveActionModel>> GetActiveActions()
+        public async Task<List<ActiveActionModel>> GetActiveActions(string[] actionIds = null)
         {
-            return  await _activeActionsRepository.GetList();
+            List<ActiveActionModel> actions=await _activeActionsRepository.GetList();
+            List<ActiveActionModel> result =new List<ActiveActionModel>();
+            if (actionIds != null)
+            {
+                foreach (var action in actions)
+                {
+                    if (actionIds.Contains(action.Id))
+                    {
+                        result.Add(action);
+                    }
+                }
+                return result;
+            }
+            return actions;
         }
 
+        public async Task<List<string>> GetUserFavoritesActions(string userId)
+        {
+            UserModel user = await _userRepository.Get(userId);
+            return user.FavActions;
+        }
+
+        public async Task<bool> UpdateUserFavoriteAction(string userId, string actionId)
+        {
+            UserModel user = await _userRepository.Get(userId);
+            if (user.FavActions == null)
+            {
+                user.FavActions = new List<string>();
+            }
+            if (user.FavActions.Count()>0&& user.FavActions.Exists(v => v == actionId))
+            {
+                user.FavActions.Remove(actionId);
+            }
+            else
+            {
+                user.FavActions.Add(actionId);
+            }
+            var updateResult = await _userRepository.Update(user);
+            return (updateResult != null) ? true : false ;
+        }
         public async Task<ActiveActionModel> AddNewOffert(string id,string place,string sector,string userId,string? mainOffertId)
         {
             ActiveActionModel action = await _activeActionsRepository.Get(id);

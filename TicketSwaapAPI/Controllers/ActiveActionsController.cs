@@ -60,6 +60,64 @@ namespace TicketSwaapAPI.Controllers
         }
 
         [Authorize(Roles = "User,Admin")]
+        [HttpPost("GetActionsList")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ActiveActionModel>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<ActiveActionModel>>> ActiveActionsListPost([FromBody] string[] actionIds)
+        {
+            try
+            {
+                _logger.LogInformation("Próba zwrócenia listy aktywnych działań");
+                List<ActiveActionModel> result = await _activeActionsLogic.GetActiveActions(actionIds);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpGet("UserFavorites")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<string>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<string>>> GetUserFavoritesActions()
+        {
+            try
+            {
+                _logger.LogInformation("Trying to returnlist of fav actions");
+                List<string> result = await _activeActionsLogic.GetUserFavoritesActions(this.User.GetUserId());
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPatch("UserFavorites")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        public async Task<ActionResult<bool>> ToggleUserFavoriteAction(string actionId)
+        {
+            try
+            {
+                _logger.LogInformation("Trying to update of fav actions");
+                bool result = await _activeActionsLogic.UpdateUserFavoriteAction(this.User.GetUserId(), actionId);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "User,Admin")]
         [HttpPut("Offert")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ActiveActionModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

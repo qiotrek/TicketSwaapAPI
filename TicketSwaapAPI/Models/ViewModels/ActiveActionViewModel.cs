@@ -21,7 +21,7 @@ namespace TicketSwaapAPI.Models.ViewModels
             List<OffertViewModel> offersList = new List< OffertViewModel >();
             foreach (var offert in offers)
             {
-                offersList.Add(OffertViewModel.ConvertToViewModel(offert));
+                offersList.Add(OffertViewModel.ConvertToViewModel(offert, action));
             }
             return new ActiveActionViewModel
             {
@@ -38,19 +38,23 @@ namespace TicketSwaapAPI.Models.ViewModels
     public class OffertViewModel
     {
         public string Id { get; set; }
+        public string EventId { get; set; }
+        public string? EventName { get; set; }
         public string Sector { get; set; }
         public string Place { get; set; }
         public string CreateUser { get; set; }
         public List<string> IntrestedOfferts { get; set; }
 
-        public static OffertViewModel ConvertToViewModel(OffertModel offert)
+        public static OffertViewModel ConvertToViewModel(OffertModel offert, ActiveActionModel? activeAction)
         {
-            return new OffertViewModel { 
-                Id = offert.Id, 
-                Sector = offert.Sector, 
-                Place = offert.Place, 
-                IntrestedOfferts = offert.IntrestedOfferts, 
-                CreateUser = offert.CreateUser 
+            return new OffertViewModel {
+                Id = offert.Id,
+                EventId = offert.EventId,
+                EventName = activeAction!=null?activeAction.Name:null,
+                Sector = offert.Sector,
+                Place = offert.Place,
+                IntrestedOfferts = offert.IntrestedOfferts,
+                CreateUser = offert.CreateUser
             };
         }
     }
