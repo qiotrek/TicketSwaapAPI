@@ -118,6 +118,28 @@ namespace TicketSwaapAPI.Controllers
         }
 
         [Authorize(Roles = "User,Admin")]
+        [HttpGet("Offert/{mainOffertId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OffertModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        public async Task<ActionResult<List<OffertModel>>> GetIntrestedOfferts(string mainOffertId)
+        {
+
+            try
+            {
+                List<OffertModel> offerts = await _activeActionsLogic.GetIntrestedOfferts(mainOffertId);
+                return Ok(offerts);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning("ArgumentException: {Message}", ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "User,Admin")]
         [HttpPut("Offert")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ActiveActionModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

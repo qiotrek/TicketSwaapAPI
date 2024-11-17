@@ -14,6 +14,7 @@ namespace TicketSwaapAPI.Services.Logic
         Task<List<ActiveActionModel>> GetActiveActions(string[]actionIds=null);
         Task<List<string>> GetUserFavoritesActions(string userId);
         Task<bool> UpdateUserFavoriteAction(string userId, string actionId);
+        Task<List<OffertModel>> GetIntrestedOfferts(string mainOffertId);
     }
 
     public class ActiveActionsLogic : IActiveActionsLogic
@@ -98,6 +99,18 @@ namespace TicketSwaapAPI.Services.Logic
             }
             var updateResult = await _userRepository.Update(user);
             return (updateResult != null) ? true : false ;
+        }
+        public async Task<List<OffertModel>> GetIntrestedOfferts(string mainOffertId)
+        {
+            List<OffertModel> result = new List<OffertModel>();
+            OffertModel mainOffert = await _offertRepository.Get(mainOffertId);
+            foreach (var offertId in mainOffert.IntrestedOfferts)
+            {
+                OffertModel offert = await _offertRepository.Get(offertId);
+
+                result.Add(offert);
+            }
+            return result;
         }
         public async Task<ActiveActionModel> AddNewOffert(string id,string place,string sector,string userId,string? mainOffertId)
         {
